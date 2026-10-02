@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --color-blush: #f3e7da;
+  --color-sand: #ead8c6;
+  --color-bronze: #8a6d3b;
+  --color-bronzedark: #6e5636;
+  --color-coco: #2b2118;
+  --font-serif: var(--font-crowne-serif), "Cormorant Garamond", "Georgia", serif;
+  --font-sans: var(--font-crowne-sans), "Jost", "Helvetica Neue", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #fbf7f1;
+  color: #2b2118;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: #8a6d3b;
+  color: #fff;
+}
+
+/* thin elegant scrollbar for drawers */
+.nice-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.nice-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.nice-scroll::-webkit-scrollbar-thumb {
+  background: #d8c3a5;
+  border-radius: 999px;
+}
