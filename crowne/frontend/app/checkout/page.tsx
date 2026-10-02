@@ -180,14 +180,14 @@ function CheckoutInner() {
                 <h2 className="mb-5 font-serif text-2xl text-coco">Payment Method</h2>
                 <div className="space-y-3">
                   <label className={`flex cursor-pointer items-start gap-4 rounded-2xl border p-5 transition ${payMethod === 'cod' ? 'border-bronze bg-blush/50' : 'border-sand'}`}>
-                    <input type="radio" name="pay" checked={payMethod === 'cod'} onChange={() => setPayMethod('cod')} className="mt-1 h-4 w-4 accent-[#8a6d3b]" />
+                    <input type="radio" name="pay" checked={payMethod === 'cod'} onChange={() => setPayMethod('cod')} className="mt-1 h-4 w-4 accent-[#e14d6f]" />
                     <div>
                       <p className="font-medium text-coco">Cash on Delivery</p>
                       <p className="mt-1 text-sm text-bronzedark/70">Pay in cash when your order arrives at your doorstep.</p>
                     </div>
                   </label>
                   <label className={`flex cursor-pointer items-start gap-4 rounded-2xl border p-5 transition ${payMethod === 'card' ? 'border-bronze bg-blush/50' : 'border-sand'}`}>
-                    <input type="radio" name="pay" checked={payMethod === 'card'} onChange={() => setPayMethod('card')} className="mt-1 h-4 w-4 accent-[#8a6d3b]" />
+                    <input type="radio" name="pay" checked={payMethod === 'card'} onChange={() => setPayMethod('card')} className="mt-1 h-4 w-4 accent-[#e14d6f]" />
                     <div className="flex-1">
                       <p className="font-medium text-coco">Debit / Credit Card</p>
                       {payConfig && !payConfig.card_enabled ? (

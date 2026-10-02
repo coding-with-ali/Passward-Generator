@@ -85,7 +85,7 @@ function ShopInner() {
                 type="checkbox"
                 checked={cats.includes(c)}
                 onChange={() => toggleCat(c)}
-                className="h-4 w-4 accent-[#8a6d3b]"
+                className="h-4 w-4 accent-[#e14d6f]"
               />
               {c}
             </label>
@@ -119,7 +119,7 @@ function ShopInner() {
             type="checkbox"
             checked={onSale}
             onChange={(e) => setOnSale(e.target.checked)}
-            className="h-4 w-4 accent-[#8a6d3b]"
+            className="h-4 w-4 accent-[#e14d6f]"
           />
           On sale only
         </label>

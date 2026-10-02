@@ -60,7 +60,7 @@ export default function Header() {
       initial={{ y: -70, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7, ease: EASE }}
-      className={`sticky top-0 z-40 border-b border-sand bg-[#fbf7f1]/95 backdrop-blur transition-shadow duration-300 ${
+      className={`sticky top-0 z-40 border-b border-sand bg-ivory/95 backdrop-blur transition-shadow duration-300 ${
         scrolled ? 'shadow-[0_10px_30px_-18px_rgba(43,33,24,0.45)]' : ''
       }`}
     >
@@ -179,7 +179,7 @@ export default function Header() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.35, ease: EASE }}
-            className="overflow-hidden border-t border-sand bg-[#fbf7f1] lg:hidden"
+            className="overflow-hidden border-t border-sand bg-ivory lg:hidden"
           >
             <div className="px-6 py-4">
               <form onSubmit={submitSearch} className="mb-4 md:hidden">

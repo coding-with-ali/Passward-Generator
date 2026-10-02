@@ -30,7 +30,7 @@ export default function CartDrawer() {
             transition={{ duration: 0.3 }}
           />
           <motion.aside
-            className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-[#fbf7f1] shadow-2xl"
+            className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-ivory shadow-2xl"
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}

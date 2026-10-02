@@ -1,7 +1,7 @@
 'use client';
 
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform, type Variants } from 'framer-motion';
-import { useRef, type ReactNode } from 'react';
+import { AnimatePresence, animate, motion, useInView, useReducedMotion, useScroll, useTransform, type Variants } from 'framer-motion';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 export const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
@@ -188,3 +188,52 @@ export function Magnetic({ children, strength = 0.25 }: { children: ReactNode; s
 
 /* --------------------------------- Counter --------------------------------- */
 export { motion, AnimatePresence };
+
+/** Animated number counter that counts up when scrolled into view. */
+export function CountUp({
+  to,
+  decimals = 0,
+  suffix = '',
+  prefix = '',
+  duration = 1.8,
+  className,
+}: {
+  to: number;
+  decimals?: number;
+  suffix?: string;
+  prefix?: string;
+  duration?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-40px' });
+  const reduce = useReducedMotion();
+  const [val, setVal] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    if (reduce) {
+      setVal(to);
+      return;
+    }
+    const controls = animate(0, to, {
+      duration,
+      ease: EASE,
+      onUpdate: (v) => setVal(v),
+    });
+    return () => controls.stop();
+  }, [inView, to, duration, reduce]);
+
+  const formatted = val.toLocaleString('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+
+  return (
+    <span ref={ref} className={className}>
+      {prefix}
+      {formatted}
+      {suffix}
+    </span>
+  );
+}

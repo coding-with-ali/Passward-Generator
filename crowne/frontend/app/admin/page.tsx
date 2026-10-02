@@ -257,7 +257,7 @@ function ProductModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-coco/50" onClick={onClose} />
-      <form onSubmit={submit} className="nice-scroll relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-[#fbf7f1] p-8 shadow-2xl">
+      <form onSubmit={submit} className="nice-scroll relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-ivory p-8 shadow-2xl">
         <h3 className="font-serif text-3xl text-coco">{product ? 'Edit Product' : 'Add Product'}</h3>
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           <div className="sm:col-span-2">
@@ -310,10 +310,10 @@ function ProductModal({
             {file && <p className="mt-1 text-xs text-bronze">Selected: {file.name}</p>}
           </div>
           <label className="flex items-center gap-2 text-sm text-bronzedark">
-            <input type="checkbox" checked={form.featured} onChange={set('featured')} className="h-4 w-4 accent-[#8a6d3b]" /> Featured
+            <input type="checkbox" checked={form.featured} onChange={set('featured')} className="h-4 w-4 accent-[#e14d6f]" /> Featured
           </label>
           <label className="flex items-center gap-2 text-sm text-bronzedark">
-            <input type="checkbox" checked={form.bestseller} onChange={set('bestseller')} className="h-4 w-4 accent-[#8a6d3b]" /> Bestseller
+            <input type="checkbox" checked={form.bestseller} onChange={set('bestseller')} className="h-4 w-4 accent-[#e14d6f]" /> Bestseller
           </label>
         </div>
         <div className="mt-6 flex gap-3">
@@ -504,7 +504,7 @@ function OrdersTab() {
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-coco/50" onClick={() => setSelected(null)} />
-          <div className="nice-scroll relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-[#fbf7f1] p-8 shadow-2xl">
+          <div className="nice-scroll relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-ivory p-8 shadow-2xl">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-xs uppercase tracking-[0.25em] text-bronze">Order</p>
