@@ -8,6 +8,7 @@ import { useAuth, useCart, useToast, useWishlist } from '@/lib/store-context';
 import type { Product, Review } from '@/lib/types';
 import ProductCard from '@/components/ProductCard';
 import Stars from '@/components/Stars';
+import { AnimatePresence, EASE, Reveal, Stagger, StaggerItem, motion } from '@/components/motion';
 
 export default function ProductPage() {
   const params = useParams();
@@ -149,62 +150,82 @@ export default function ProductPage() {
 
       <div className="grid gap-10 lg:grid-cols-2">
         {/* gallery */}
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -32 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: EASE }}
+        >
           <div className="overflow-hidden rounded-2xl bg-blush shadow-sm">
-            <div className="aspect-[4/5]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={imgSrc(gallery[activeImg])}
-                alt={product.name}
-                className="h-full w-full object-cover"
-              />
+            <div className="relative aspect-[4/5]">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeImg}
+                  className="absolute inset-0"
+                  initial={{ opacity: 0, scale: 1.04 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.45, ease: EASE }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={imgSrc(gallery[activeImg])}
+                    alt={product.name}
+                    className="h-full w-full object-cover"
+                  />
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
           {gallery.length > 1 && (
             <div className="mt-4 grid grid-cols-4 gap-3">
               {gallery.map((g, i) => (
-                <button
+                <motion.button
                   key={i}
                   onClick={() => setActiveImg(i)}
+                  whileTap={{ scale: 0.94 }}
                   className={`overflow-hidden rounded-xl bg-blush ring-2 transition ${i === activeImg ? 'ring-bronze' : 'ring-transparent hover:ring-sand'}`}
                 >
                   <div className="aspect-square">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={imgSrc(g)} alt={`${product.name} ${i + 1}`} className="h-full w-full object-cover" />
                   </div>
-                </button>
+                </motion.button>
               ))}
             </div>
           )}
-        </div>
+        </motion.div>
 
         {/* info */}
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-bronze">{product.category}</p>
-          <h1 className="mt-2 font-serif text-5xl leading-tight text-coco">{product.name}</h1>
-          <div className="mt-3 flex items-center gap-2">
+        <motion.div
+          initial="hidden"
+          animate="show"
+          variants={{ hidden: {}, show: { transition: { staggerChildren: 0.07, delayChildren: 0.15 } } }}
+        >
+          <motion.p variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } } }} className="text-xs font-semibold uppercase tracking-[0.3em] text-bronze">{product.category}</motion.p>
+          <motion.h1 variants={{ hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } } }} className="mt-2 font-serif text-5xl leading-tight text-coco">{product.name}</motion.h1>
+          <motion.div variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } } }} className="mt-3 flex items-center gap-2">
             <Stars value={product.rating} size={16} />
             <span className="text-sm text-bronze/70">
               {product.rating.toFixed(1)} · {product.reviews_count} reviews
             </span>
-          </div>
-          <div className="mt-4 flex items-center gap-3">
+          </motion.div>
+          <motion.div variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } } }} className="mt-4 flex items-center gap-3">
             <span className="font-serif text-4xl text-coco">{formatPKR(product.price)}</span>
             {onSale && <span className="text-xl text-bronze/60 line-through">{formatPKR(product.old_price!)}</span>}
-          </div>
+          </motion.div>
 
           {lowStock && (
-            <p className="mt-3 inline-block rounded-full bg-red-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-red-800">
+            <motion.p variants={{ hidden: { opacity: 0, scale: 0.9 }, show: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: EASE } } }} className="mt-3 inline-block rounded-full bg-red-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-red-800">
               Only {product.stock} left in stock
-            </p>
+            </motion.p>
           )}
           {outOfStock && (
-            <p className="mt-3 inline-block rounded-full bg-coco px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-blush">
+            <motion.p variants={{ hidden: { opacity: 0, scale: 0.9 }, show: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: EASE } } }} className="mt-3 inline-block rounded-full bg-coco px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-blush">
               Out of stock
-            </p>
+            </motion.p>
           )}
 
-          <p className="mt-5 leading-relaxed text-bronzedark">{product.description}</p>
+          <motion.p variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } } }} className="mt-5 leading-relaxed text-bronzedark">{product.description}</motion.p>
 
           {/* colors */}
           {product.colors?.length > 0 && (
@@ -246,19 +267,20 @@ export default function ProductPage() {
           </div>
 
           {/* qty + actions */}
-          <div className="mt-8 flex flex-wrap items-center gap-4">
+          <motion.div variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } } }} className="mt-8 flex flex-wrap items-center gap-4">
             <div className="flex items-center rounded-full border border-sand bg-white">
               <button onClick={() => setQty((v) => Math.max(1, v - 1))} className="px-4 py-3 text-bronze" aria-label="Decrease quantity">−</button>
               <span className="w-8 text-center font-medium">{qty}</span>
               <button onClick={() => setQty((v) => Math.min(10, v + 1))} className="px-4 py-3 text-bronze" aria-label="Increase quantity">+</button>
             </div>
-            <button
+            <motion.button
               onClick={handleAdd}
               disabled={outOfStock}
-              className="flex-1 rounded-full bg-bronze px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-bronzedark disabled:opacity-40"
+              whileTap={{ scale: 0.97 }}
+              className="btn-shimmer flex-1 rounded-full bg-bronze px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.3em] text-white transition-colors hover:bg-bronzedark disabled:opacity-40"
             >
               Add to Bag
-            </button>
+            </motion.button>
             <button
               onClick={() => toggle(product.slug)}
               aria-label="Toggle wishlist"
@@ -268,21 +290,23 @@ export default function ProductPage() {
                 <path d="M12 21s-7.5-4.9-10-9.3C.4 8.6 2.3 4.9 6 4.9c2.2 0 3.6 1.2 4.4 2.4L12 9l1.6-1.7C14.4 6.1 15.8 4.9 18 4.9c3.7 0 5.6 3.7 4 6.8C19.5 16.1 12 21 12 21z" />
               </svg>
             </button>
-          </div>
-          <button
+          </motion.div>
+          <motion.button
             onClick={handleBuyNow}
             disabled={outOfStock}
-            className="mt-3 w-full rounded-full bg-coco px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.3em] text-blush transition hover:bg-bronzedark disabled:opacity-40"
+            variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } } }}
+            whileTap={{ scale: 0.98 }}
+            className="mt-3 w-full rounded-full bg-coco px-8 py-3.5 text-xs font-semibold uppercase tracking-[0.3em] text-blush transition-colors hover:bg-bronzedark disabled:opacity-40"
           >
             Buy Now
-          </button>
+          </motion.button>
 
-          <div className="mt-8 space-y-2 rounded-2xl bg-white p-5 text-sm text-bronzedark shadow-sm">
+          <motion.div variants={{ hidden: { opacity: 0, y: 18 }, show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE } } }} className="mt-8 space-y-2 rounded-2xl bg-white p-5 text-sm text-bronzedark shadow-sm">
             <p>Free shipping on orders over PKR 5,000</p>
             <p>7-day easy size exchange</p>
             <p>Cash on delivery available nationwide</p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* reviews */}
@@ -345,12 +369,16 @@ export default function ProductPage() {
       {/* related */}
       {related.length > 0 && (
         <section className="mt-16">
-          <h2 className="mb-8 text-center font-serif text-4xl text-coco">You May Also Adore</h2>
-          <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
+          <Reveal className="mb-8 text-center">
+            <h2 className="font-serif text-4xl text-coco">You May Also Adore</h2>
+          </Reveal>
+          <Stagger className="grid grid-cols-2 gap-5 lg:grid-cols-4" gap={0.1}>
             {related.map((p) => (
-              <ProductCard key={String(p.id)} product={p} />
+              <StaggerItem key={String(p.id)}>
+                <ProductCard product={p} />
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </section>
       )}
     </div>

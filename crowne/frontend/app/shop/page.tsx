@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { api, normProducts } from '@/lib/api';
 import type { Product } from '@/lib/types';
 import ProductCard from '@/components/ProductCard';
+import { AnimatePresence, EASE, Reveal, motion } from '@/components/motion';
 
 const SORTS = [
   { v: '', label: 'Sort: Recommended' },
@@ -134,10 +135,10 @@ function ShopInner() {
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
-      <div className="mb-8 text-center">
+      <Reveal className="mb-8 text-center" y={20}>
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-bronze">The Collection</p>
         <h1 className="mt-2 font-serif text-5xl text-coco">Shop Crowne</h1>
-      </div>
+      </Reveal>
 
       {/* toolbar */}
       <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -166,7 +167,20 @@ function ShopInner() {
         </div>
       </div>
 
-      {mobileFilters && <div className="mb-8 rounded-2xl bg-white p-6 shadow-sm lg:hidden">{filters}</div>}
+      <AnimatePresence mode="wait">
+        {mobileFilters && (
+          <motion.div
+            key="mobile-filters"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: EASE }}
+            className="mb-8 overflow-hidden rounded-2xl bg-white shadow-sm lg:hidden"
+          >
+            <div className="p-6">{filters}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="flex gap-10">
         <aside className="hidden w-60 shrink-0 lg:block">
@@ -193,11 +207,22 @@ function ShopInner() {
               <p className="mb-4 text-xs uppercase tracking-[0.2em] text-bronze/70">
                 {products.length} {products.length === 1 ? 'piece' : 'pieces'}
               </p>
-              <div className="grid grid-cols-2 gap-5 xl:grid-cols-3">
-                {products.map((p) => (
-                  <ProductCard key={String(p.id)} product={p} />
-                ))}
-              </div>
+              <motion.div layout className="grid grid-cols-2 gap-5 xl:grid-cols-3">
+                <AnimatePresence mode="popLayout">
+                  {products.map((p) => (
+                    <motion.div
+                      key={String(p.id)}
+                      layout
+                      initial={{ opacity: 0, scale: 0.92 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.92 }}
+                      transition={{ duration: 0.4, ease: EASE }}
+                    >
+                      <ProductCard product={p} />
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </motion.div>
             </>
           )}
         </div>
