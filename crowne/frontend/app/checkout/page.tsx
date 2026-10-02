@@ -5,12 +5,30 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { useCart, useToast } from '@/lib/store-context';
 import { api, formatPKR, imgSrc, shippingFor } from '@/lib/api';
+import {
+  PK_CITIES,
+  normalizePhone,
+  validateShippingForm,
+  type ShippingForm,
+} from '@/lib/validation';
 import type { PaymentsConfig } from '@/lib/types';
 
 const STEPS = ['Shipping', 'Payment', 'Review'];
 
 const inputCls =
   'w-full rounded-xl border border-sand bg-white px-4 py-3 text-sm text-coco placeholder:text-bronze/40 focus:border-bronze focus:outline-none';
+
+const inputClsFor = (error: string | null) =>
+  `${inputCls} ${error ? 'border-red-500 focus:border-red-500' : ''}`;
+
+function Field({ error, children }: { error: string | null; children: React.ReactNode }) {
+  return (
+    <div>
+      {children}
+      {error && <p className="mt-1.5 text-xs font-medium text-red-700">{error}</p>}
+    </div>
+  );
+}
 
 function CheckoutInner() {
   const router = useRouter();
@@ -22,7 +40,13 @@ function CheckoutInner() {
   const [placing, setPlacing] = useState(false);
   const [done, setDone] = useState<{ order_number: string; total: number } | null>(null);
 
-  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', city: '', postal: '' });
+  const [form, setForm] = useState<ShippingForm>({ name: '', email: '', phone: '', address: '', city: '', postal: '' });
+  const [errors, setErrors] = useState<Record<keyof ShippingForm, string | null>>({
+    name: null, email: null, phone: null, address: null, city: null, postal: null,
+  });
+  const [touched, setTouched] = useState<Record<keyof ShippingForm, boolean>>({
+    name: false, email: false, phone: false, address: false, city: false, postal: false,
+  });
   const [couponCode] = useState(sp.get('coupon') ?? '');
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [payMethod, setPayMethod] = useState<'cod' | 'card'>('cod');
@@ -58,11 +82,35 @@ function CheckoutInner() {
     );
   }
 
-  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) =>
-    setForm((f) => ({ ...f, [k]: e.target.value }));
+  const set =
+    (k: keyof ShippingForm) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+      const raw = e.target.value;
+      const value = k === 'phone' ? normalizePhone(raw) : raw;
+      setForm((f) => ({ ...f, [k]: value }));
+      // live re-validate once the field has been touched
+      if (touched[k]) {
+        const next = { ...form, [k]: value };
+        setErrors(validateShippingForm(next));
+      }
+    };
 
-  const canNextFromStep0 =
-    form.name.trim() && /\S+@\S+\.\S+/.test(form.email) && form.phone.trim() && form.address.trim() && form.city.trim();
+  const blur = (k: keyof ShippingForm) => () => {
+    setTouched((t) => ({ ...t, [k]: true }));
+    setErrors(validateShippingForm(form));
+  };
+
+  const tryContinue = () => {
+    const errs = validateShippingForm(form);
+    setErrors(errs);
+    setTouched({ name: true, email: true, phone: true, address: true, city: true, postal: true });
+    if (Object.values(errs).every((e) => e === null)) {
+      setStep(1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      toast('Please fix the highlighted fields.', 'error');
+    }
+  };
 
   const placeOrder = async () => {
     setPlacing(true);
@@ -156,19 +204,65 @@ function CheckoutInner() {
           <div className="rounded-2xl bg-white p-6 shadow-sm sm:p-8">
             {step === 0 && (
               <div>
-                <h2 className="mb-5 font-serif text-2xl text-coco">Contact & Shipping</h2>
+                <div className="mb-5 flex items-center justify-between">
+                  <h2 className="font-serif text-2xl text-coco">Contact & Shipping</h2>
+                  <p className="text-xs text-bronze/70">No account needed — checkout as guest</p>
+                </div>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <input value={form.name} onChange={set('name')} placeholder="Full name *" className={inputCls} />
-                  <input value={form.phone} onChange={set('phone')} placeholder="Phone *" className={inputCls} />
-                  <input value={form.email} onChange={set('email')} placeholder="Email *" type="email" className={`${inputCls} sm:col-span-2`} />
-                  <input value={form.address} onChange={set('address')} placeholder="Street address *" className={`${inputCls} sm:col-span-2`} />
-                  <input value={form.city} onChange={set('city')} placeholder="City *" className={inputCls} />
-                  <input value={form.postal} onChange={set('postal')} placeholder="Postal code (optional)" className={inputCls} />
+                  <Field error={touched.name ? errors.name : null}>
+                    <input
+                      value={form.name} onChange={set('name')} onBlur={blur('name')}
+                      placeholder="Full name *" className={inputClsFor(touched.name ? errors.name : null)}
+                    />
+                  </Field>
+                  <Field error={touched.phone ? errors.phone : null}>
+                    <input
+                      value={form.phone} onChange={set('phone')} onBlur={blur('phone')}
+                      placeholder="Mobile number *  (e.g. 03001234567)"
+                      inputMode="numeric" maxLength={11}
+                      className={inputClsFor(touched.phone ? errors.phone : null)}
+                    />
+                  </Field>
+                  <div className="sm:col-span-2">
+                    <Field error={touched.email ? errors.email : null}>
+                      <input
+                        value={form.email} onChange={set('email')} onBlur={blur('email')}
+                        placeholder="Email (optional)" type="email"
+                        className={inputClsFor(touched.email ? errors.email : null)}
+                      />
+                    </Field>
+                  </div>
+                  <div className="sm:col-span-2">
+                    <Field error={touched.address ? errors.address : null}>
+                      <input
+                        value={form.address} onChange={set('address')} onBlur={blur('address')}
+                        placeholder="Street address *  (house, street, area)"
+                        className={inputClsFor(touched.address ? errors.address : null)}
+                      />
+                    </Field>
+                  </div>
+                  <Field error={touched.city ? errors.city : null}>
+                    <select
+                      value={form.city} onChange={set('city')} onBlur={blur('city')}
+                      className={`${inputClsFor(touched.city ? errors.city : null)} ${form.city ? '' : 'text-bronze/40'}`}
+                    >
+                      <option value="">Select city *</option>
+                      {PK_CITIES.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </Field>
+                  <Field error={touched.postal ? errors.postal : null}>
+                    <input
+                      value={form.postal} onChange={set('postal')} onBlur={blur('postal')}
+                      placeholder="Postal code (optional)" inputMode="numeric" maxLength={5}
+                      className={inputClsFor(touched.postal ? errors.postal : null)}
+                    />
+                  </Field>
                 </div>
                 <button
-                  onClick={() => canNextFromStep0 && setStep(1)}
-                  disabled={!canNextFromStep0}
-                  className="mt-6 w-full rounded-full bg-bronze py-4 text-xs font-semibold uppercase tracking-[0.3em] text-white hover:bg-bronzedark disabled:opacity-40 sm:w-auto sm:px-12"
+                  onClick={tryContinue}
+                  className="mt-6 w-full rounded-full bg-bronze py-4 text-xs font-semibold uppercase tracking-[0.3em] text-white hover:bg-bronzedark sm:w-auto sm:px-12"
                 >
                   Continue to Payment
                 </button>
