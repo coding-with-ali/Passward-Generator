@@ -10,7 +10,7 @@ router.get('/track/:orderNumber', async (req: Request, res: Response) => {
     if (!order) return res.status(404).json({ error: 'Order not found' });
 
     const email = req.query.email as string | undefined;
-    if (email && email.trim().toLowerCase() !== order.email.toLowerCase()) {
+    if (email && order.email && email.trim().toLowerCase() !== order.email.toLowerCase()) {
       return res.status(403).json({ error: 'Email does not match this order' });
     }
 

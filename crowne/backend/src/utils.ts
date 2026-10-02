@@ -22,6 +22,11 @@ export function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+/** Pakistani mobile number: 11 digits starting with 03. */
+export function isValidPkPhone(phone: string): boolean {
+  return /^03\d{9}$/.test(phone.replace(/\D/g, ''));
+}
+
 export function serializeProduct(p: IProduct | any) {
   const obj = p.toObject ? p.toObject() : p;
   return {

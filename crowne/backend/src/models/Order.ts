@@ -22,7 +22,7 @@ export interface IOrder extends Document {
   orderNumber: string;
   user?: Types.ObjectId;
   name: string;
-  email: string;
+  email?: string;
   phone: string;
   address: string;
   city: string;
@@ -65,7 +65,7 @@ const orderSchema = new Schema<IOrder>(
     orderNumber: { type: String, required: true, unique: true },
     user: { type: Schema.Types.ObjectId, ref: 'User' },
     name: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: false },
     phone: { type: String, required: true },
     address: { type: String, required: true },
     city: { type: String, required: true },

@@ -8,6 +8,7 @@ import {
   calculateDiscount,
   calculateShipping,
   isValidEmail,
+  isValidPkPhone,
   serializeOrder,
 } from '../utils';
 import { requireAuth } from '../middleware/auth';
@@ -115,11 +116,29 @@ router.post('/checkout', async (req: Request, res: Response) => {
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ error: 'Order must include at least one item' });
     }
-    if (!name || !email || !phone || !address || !city) {
-      return res.status(400).json({ error: 'Name, email, phone, address and city are required' });
+    // Daraz-style guest checkout validation: no account needed, but every
+    // field must be genuinely valid.
+    const cleanName = String(name || '').trim();
+    const cleanPhone = String(phone || '').replace(/\D/g, '');
+    const cleanEmail = String(email || '').trim();
+    const cleanAddress = String(address || '').trim();
+    const cleanCity = String(city || '').trim();
+    if (cleanName.length < 3) {
+      return res.status(400).json({ error: 'Please enter your full name (min 3 characters)' });
     }
-    if (!isValidEmail(String(email))) {
+    if (!isValidPkPhone(cleanPhone)) {
+      return res
+        .status(400)
+        .json({ error: 'Please enter a valid 11-digit mobile number starting with 03' });
+    }
+    if (cleanEmail && !isValidEmail(cleanEmail)) {
       return res.status(400).json({ error: 'Invalid email address' });
+    }
+    if (cleanAddress.length < 10) {
+      return res.status(400).json({ error: 'Please enter your complete street address' });
+    }
+    if (!cleanCity) {
+      return res.status(400).json({ error: 'Please select your city' });
     }
     if (payment_method !== 'cod' && payment_method !== 'card') {
       return res.status(400).json({ error: "payment_method must be 'cod' or 'card'" });
@@ -157,11 +176,11 @@ router.post('/checkout', async (req: Request, res: Response) => {
     const order = await Order.create({
       orderNumber,
       user: getOptionalUserId(req),
-      name: String(name).trim(),
-      email: String(email).trim().toLowerCase(),
-      phone: String(phone).trim(),
-      address: String(address).trim(),
-      city: String(city).trim(),
+      name: cleanName,
+      email: cleanEmail ? cleanEmail.toLowerCase() : undefined,
+      phone: cleanPhone,
+      address: cleanAddress,
+      city: cleanCity,
       postal: postal ? String(postal).trim() : undefined,
       paymentMethod: payment_method,
       items: lines,
