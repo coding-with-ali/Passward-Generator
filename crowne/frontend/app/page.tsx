@@ -257,49 +257,38 @@ export default function HomePage() {
             </Link>
           }
         />
-        <Stagger className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-12" gap={0.12}>
-          {CATEGORIES.map((c, i) => (
-            <StaggerItem
-              key={c.name}
-              className={
-                i === 0
-                  ? 'col-span-2 lg:col-span-7'
-                  : i === 1
-                    ? 'lg:col-span-5'
-                    : 'lg:col-span-4'
-              }
-            >
+        <Stagger className="border-t border-coco/15" gap={0.06}>
+          {CATEGORIES.map((c) => (
+            <StaggerItem key={c.name}>
               <Link
                 href={`/shop?category=${encodeURIComponent(c.name)}`}
-                className="group relative block overflow-hidden rounded-[1.75rem] shadow-sm"
+                className="group relative flex items-center gap-5 overflow-hidden border-b border-coco/15 py-6 sm:gap-10 sm:py-8"
               >
-                <motion.div
-                  className={i === 0 ? 'aspect-[16/10] lg:aspect-[16/9]' : 'aspect-[3/4]'}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.8, ease: EASE }}
-                >
+                {/* hover wash */}
+                <span className="absolute inset-0 origin-bottom scale-y-0 bg-blush/80 transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-y-100" />
+                <span className="relative w-10 shrink-0 font-serif text-xl italic text-bronze/60">{c.n}</span>
+                <div className="relative min-w-0 flex-1">
+                  <p className="truncate font-serif text-4xl text-coco transition-all duration-500 group-hover:translate-x-2 group-hover:text-bronze sm:text-6xl">
+                    {c.name}
+                  </p>
+                  <p className="mt-1.5 text-[11px] uppercase tracking-[0.28em] text-bronze/75">{c.blurb}</p>
+                </div>
+                <div className="relative hidden h-24 w-20 shrink-0 overflow-hidden rounded-2xl shadow-md sm:block sm:h-28 sm:w-28">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={imgSrc(c.img)}
                     alt={c.name}
                     loading="lazy"
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-3 group-hover:scale-110"
                   />
-                </motion.div>
-                <div className="absolute inset-0 bg-gradient-to-t from-coco/80 via-coco/10 to-transparent" />
-                <span className="absolute left-5 top-4 font-serif text-lg italic text-white/70">{c.n}</span>
-                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
-                  <div>
-                    <p className="font-serif text-3xl text-white sm:text-4xl">{c.name}</p>
-                    <p className="mt-1 text-[11px] uppercase tracking-[0.25em] text-sand/90">{c.blurb}</p>
-                  </div>
-                  <motion.span
-                    className="flex h-12 w-12 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur transition-colors duration-300 group-hover:bg-bronze"
-                    whileHover={{ rotate: -45 }}
-                  >
-                    →
-                  </motion.span>
                 </div>
+                <motion.span
+                  className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-bronze/40 text-xl text-bronze transition-all duration-400 group-hover:border-bronze group-hover:bg-bronze group-hover:text-white"
+                  whileHover={{ rotate: -45 }}
+                  transition={{ duration: 0.35, ease: EASE }}
+                >
+                  →
+                </motion.span>
               </Link>
             </StaggerItem>
           ))}
