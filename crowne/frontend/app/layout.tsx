@@ -35,6 +35,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${serif.variable} ${sans.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <Providers>
+          <div className="bg-coco px-4 py-2 text-center">
+            <p className="text-[10px] font-medium uppercase tracking-[0.3em] text-sand">
+              Complimentary shipping over PKR 5,000 <span className="mx-2 text-bronze">·</span> Cash on Delivery nationwide
+            </p>
+          </div>
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />

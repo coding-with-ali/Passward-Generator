@@ -10,10 +10,10 @@ import Stars from '@/components/Stars';
 import { EASE, Magnetic, Marquee, Parallax, Reveal, SplitWords, Stagger, StaggerItem, motion } from '@/components/motion';
 
 const CATEGORIES = [
-  { name: 'Heels', img: '/images/product-1.jpg', blurb: 'Command every room' },
-  { name: 'Flats', img: '/images/product-4.jpg', blurb: 'Grace in every step' },
-  { name: 'Sandals', img: '/images/product-7.jpg', blurb: 'Sunlit elegance' },
-  { name: 'Slippers', img: '/images/product-10.jpg', blurb: 'Effortless comfort' },
+  { n: '01', name: 'Heels', img: '/images/product-1.jpg', blurb: 'Command every room' },
+  { n: '02', name: 'Flats', img: '/images/product-4.jpg', blurb: 'Grace in every step' },
+  { n: '03', name: 'Sandals', img: '/images/product-7.jpg', blurb: 'Sunlit elegance' },
+  { n: '04', name: 'Slippers', img: '/images/product-10.jpg', blurb: 'Effortless comfort' },
 ];
 
 const TESTIMONIALS = [
@@ -53,19 +53,34 @@ function CrownMark({ className }: { className?: string }) {
   );
 }
 
-function SectionHead({ eyebrow, title }: { eyebrow: string; title: string }) {
+/** Editorial section heading: index number + huge serif title, left aligned. */
+function EditorialHead({
+  index,
+  eyebrow,
+  title,
+  dark = false,
+  action,
+}: {
+  index: string;
+  eyebrow: string;
+  title: string;
+  dark?: boolean;
+  action?: React.ReactNode;
+}) {
   return (
-    <Reveal className="mb-12 text-center">
-      <p className="text-xs font-semibold uppercase tracking-[0.35em] text-bronze">{eyebrow}</p>
-      <h2 className="mt-3 font-serif text-4xl text-coco sm:text-5xl">{title}</h2>
-      <motion.div
-        className="mx-auto mt-5 h-px w-16 bg-bronze"
-        initial={{ scaleX: 0 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.9, delay: 0.25, ease: EASE }}
-      />
-    </Reveal>
+    <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
+      <Reveal>
+        <p className={`flex items-center gap-4 text-xs font-semibold uppercase tracking-[0.35em] ${dark ? 'text-bronze' : 'text-bronze'}`}>
+          <span className="font-serif text-base italic tracking-normal text-bronze/70">{index}</span>
+          <span className={`h-px w-10 ${dark ? 'bg-bronze/60' : 'bg-bronze/50'}`} />
+          {eyebrow}
+        </p>
+        <h2 className={`mt-4 max-w-2xl font-serif text-5xl leading-[1.05] sm:text-6xl ${dark ? 'text-blush' : 'text-coco'}`}>
+          {title}
+        </h2>
+      </Reveal>
+      {action && <Reveal delay={0.15}>{action}</Reveal>}
+    </div>
   );
 }
 
@@ -105,9 +120,9 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* HERO — parallax + cinematic entrance */}
-      <section className="relative flex min-h-[92vh] items-center justify-center overflow-hidden">
-        <Parallax className="absolute inset-0" speed={0.28}>
+      {/* ============ HERO — full-screen editorial ============ */}
+      <section className="relative flex min-h-[100svh] items-end overflow-hidden">
+        <Parallax className="absolute inset-0" speed={0.3}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imgSrc('/images/hero.jpg')}
@@ -115,116 +130,153 @@ export default function HomePage() {
             className="animate-slow-zoom h-full w-full object-cover"
           />
         </Parallax>
-        <div className="absolute inset-0 bg-gradient-to-b from-coco/60 via-coco/25 to-coco/60" />
+        <div className="absolute inset-0 bg-gradient-to-r from-coco/80 via-coco/35 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-coco/70 via-transparent to-coco/20" />
 
-        {/* floating shimmer accents */}
-        <motion.div
-          aria-hidden
-          className="animate-float absolute left-[12%] top-[22%] h-24 w-24 rounded-full bg-bronze/20 blur-2xl"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 1.5 }}
-        />
-        <motion.div
-          aria-hidden
-          className="animate-float absolute bottom-[20%] right-[10%] h-32 w-32 rounded-full bg-sand/20 blur-3xl [animation-delay:2s]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.4, duration: 1.5 }}
-        />
-
-        <div className="relative z-10 px-6 text-center">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pb-24 pt-40 sm:pb-28">
           <motion.p
-            className="text-xs font-medium uppercase tracking-[0.5em] text-sand"
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.35, ease: EASE }}
+            className="flex items-center gap-3 text-[11px] font-medium uppercase tracking-[0.45em] text-sand"
+            initial={{ opacity: 0, x: -24 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3, ease: EASE }}
           >
-            Crowne Footwear
+            <span className="inline-block h-px w-12 bg-bronze" />
+            FW26 · The Regal Edit
           </motion.p>
-          <SplitWords
-            text="Step Into Elegance"
-            as="h1"
-            delay={0.5}
-            className="mx-auto mt-4 block max-w-3xl font-serif text-6xl font-medium leading-tight text-white sm:text-7xl"
-          />
+
+          <div className="mt-6">
+            <SplitWords
+              text="Step into"
+              as="h1"
+              delay={0.45}
+              wordDelay={0.09}
+              className="block font-serif text-[17vw] font-medium leading-[0.95] text-white sm:text-8xl lg:text-[7.5rem]"
+            />
+            <SplitWords
+              text="pure elegance."
+              as="span"
+              delay={0.75}
+              wordDelay={0.09}
+              className="block font-serif text-[17vw] font-medium italic leading-[0.95] text-sand sm:text-8xl lg:text-[7.5rem]"
+            />
+          </div>
+
           <motion.p
-            className="mx-auto mt-5 max-w-xl text-lg font-light text-blush/90"
+            className="mt-7 max-w-md text-base font-light leading-relaxed text-blush/85"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.05, ease: EASE }}
+            transition={{ duration: 0.8, delay: 1.15, ease: EASE }}
           >
-            Premium ladies&apos; footwear, designed for grace and crafted for comfort —
-            delivered across Pakistan.
+            Heels, flats & sandals hand-finished for queens — delivered to your
+            doorstep, anywhere in Pakistan.
           </motion.p>
+
           <motion.div
-            className="mt-9 flex flex-wrap items-center justify-center gap-4"
+            className="mt-9 flex flex-wrap items-center gap-4"
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1.25, ease: EASE }}
+            transition={{ duration: 0.8, delay: 1.3, ease: EASE }}
           >
             <Magnetic>
               <Link
                 href="/shop"
-                className="btn-shimmer inline-block rounded-full bg-bronze px-10 py-4 text-xs font-semibold uppercase tracking-[0.3em] text-white transition-colors hover:bg-bronzedark"
+                className="btn-shimmer group inline-flex items-center gap-3 rounded-full bg-bronze px-9 py-4 text-xs font-semibold uppercase tracking-[0.3em] text-white transition-colors hover:bg-bronzedark"
               >
                 Shop the Collection
+                <span className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
               </Link>
             </Magnetic>
             <Magnetic>
               <Link
                 href="/shop?bestseller=1"
-                className="inline-block rounded-full border border-white/70 px-10 py-4 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-white hover:text-coco"
+                className="inline-flex items-center gap-3 rounded-full border border-white/60 px-9 py-4 text-xs font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-white hover:text-coco"
               >
                 Bestsellers
               </Link>
             </Magnetic>
           </motion.div>
+
+          <motion.div
+            className="mt-14 flex items-center gap-8 text-[10px] uppercase tracking-[0.3em] text-white/60"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.7, duration: 1 }}
+          >
+            <span className="flex items-center gap-2">
+              <motion.span
+                className="inline-block h-1.5 w-1.5 rounded-full bg-bronze"
+                animate={{ scale: [1, 1.6, 1], opacity: [1, 0.5, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              14 signature pieces
+            </span>
+            <span className="hidden sm:inline">Cash on Delivery</span>
+            <span className="hidden md:inline">4.9 ★ loved by 2,000+ women</span>
+          </motion.div>
         </div>
 
-        {/* scroll cue */}
+        {/* side scroll cue */}
         <motion.div
-          className="absolute bottom-7 left-1/2 z-10 -translate-x-1/2"
+          className="absolute bottom-8 right-6 z-10 hidden flex-col items-center gap-3 sm:flex"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.8, duration: 1 }}
+          transition={{ delay: 1.9, duration: 1 }}
         >
-          <motion.div
-            className="flex h-12 w-7 items-start justify-center rounded-full border border-white/50 p-1.5"
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <div className="h-2 w-1 rounded-full bg-white/80" />
-          </motion.div>
+          <span className="text-[10px] uppercase tracking-[0.35em] text-white/60 [writing-mode:vertical-lr]">Scroll</span>
+          <motion.span
+            className="block h-14 w-px bg-white/40"
+            animate={{ scaleY: [0.3, 1, 0.3], opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ transformOrigin: 'top' }}
+          />
         </motion.div>
       </section>
 
-      {/* MARQUEE RIBBON */}
-      <div className="overflow-hidden border-y border-bronze/20 bg-coco py-3.5">
+      {/* ============ MARQUEE ============ */}
+      <div className="overflow-hidden border-y border-bronze/25 bg-coco py-4">
         <Marquee>
           {MARQUEE_ITEMS.map((m) => (
-            <span key={m} className="mx-6 flex items-center gap-6 whitespace-nowrap">
-              <span className="text-[11px] font-medium uppercase tracking-[0.3em] text-sand">{m}</span>
+            <span key={m} className="mx-7 flex items-center gap-7 whitespace-nowrap">
+              <span className="font-serif text-lg italic text-sand">{m}</span>
               <CrownMark className="h-3.5 w-4 text-bronze" />
             </span>
           ))}
         </Marquee>
       </div>
 
-      {/* CATEGORY COLLECTIONS */}
-      <section className="mx-auto max-w-7xl px-6 py-24">
-        <SectionHead eyebrow="Collections" title="Shop by Category" />
-        <Stagger className="grid grid-cols-2 gap-5 lg:grid-cols-4" gap={0.12}>
-          {CATEGORIES.map((c) => (
-            <StaggerItem key={c.name}>
+      {/* ============ 01 COLLECTIONS — asymmetric editorial grid ============ */}
+      <section className="mx-auto max-w-7xl px-6 py-24 sm:py-28">
+        <EditorialHead
+          index="01"
+          eyebrow="The Collections"
+          title="Find your signature stride."
+          action={
+            <Link href="/shop" className="group inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-bronze">
+              View all
+              <span className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
+            </Link>
+          }
+        />
+        <Stagger className="grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-12" gap={0.12}>
+          {CATEGORIES.map((c, i) => (
+            <StaggerItem
+              key={c.name}
+              className={
+                i === 0
+                  ? 'col-span-2 lg:col-span-7'
+                  : i === 1
+                    ? 'lg:col-span-5'
+                    : 'lg:col-span-4'
+              }
+            >
               <Link
                 href={`/shop?category=${encodeURIComponent(c.name)}`}
-                className="group relative block overflow-hidden rounded-2xl shadow-sm"
+                className="group relative block overflow-hidden rounded-[1.75rem] shadow-sm"
               >
                 <motion.div
-                  className="aspect-[3/4]"
-                  whileHover={{ scale: 1.04 }}
-                  transition={{ duration: 0.7, ease: EASE }}
+                  className={i === 0 ? 'aspect-[16/10] lg:aspect-[16/9]' : 'aspect-[3/4]'}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.8, ease: EASE }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -234,13 +286,19 @@ export default function HomePage() {
                     className="h-full w-full object-cover"
                   />
                 </motion.div>
-                <div className="absolute inset-0 bg-gradient-to-t from-coco/75 via-transparent to-transparent transition-opacity duration-500 group-hover:from-coco/85" />
-                <div className="absolute inset-x-0 bottom-0 translate-y-1 p-5 text-center transition-transform duration-500 group-hover:translate-y-0">
-                  <p className="font-serif text-2xl text-white">{c.name}</p>
-                  <p className="mt-1 text-[11px] uppercase tracking-[0.25em] text-sand/90">{c.blurb}</p>
-                  <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.3em] text-white/0 transition-all duration-500 group-hover:text-white/90">
-                    Explore →
-                  </p>
+                <div className="absolute inset-0 bg-gradient-to-t from-coco/80 via-coco/10 to-transparent" />
+                <span className="absolute left-5 top-4 font-serif text-lg italic text-white/70">{c.n}</span>
+                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
+                  <div>
+                    <p className="font-serif text-3xl text-white sm:text-4xl">{c.name}</p>
+                    <p className="mt-1 text-[11px] uppercase tracking-[0.25em] text-sand/90">{c.blurb}</p>
+                  </div>
+                  <motion.span
+                    className="flex h-12 w-12 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur transition-colors duration-300 group-hover:bg-bronze"
+                    whileHover={{ rotate: -45 }}
+                  >
+                    →
+                  </motion.span>
                 </div>
               </Link>
             </StaggerItem>
@@ -248,10 +306,38 @@ export default function HomePage() {
         </Stagger>
       </section>
 
-      {/* FEATURED */}
-      <section className="bg-blush/60 py-24">
+      {/* ============ EDITORIAL PARALLAX BANNER ============ */}
+      <section className="relative flex min-h-[68vh] items-center justify-center overflow-hidden">
+        <Parallax className="absolute inset-0" speed={0.35}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={imgSrc('/images/product-5.jpg')} alt="Crowne craft" className="h-full w-full object-cover" />
+        </Parallax>
+        <div className="absolute inset-0 bg-coco/60" />
+        <Reveal className="relative z-10 max-w-4xl px-6 text-center">
+          <CrownMark className="mx-auto h-8 w-10 text-bronze" />
+          <p className="mt-6 font-serif text-4xl italic leading-snug text-white sm:text-6xl">
+            “Grace in every step,
+            <br />
+            royalty in every pair.”
+          </p>
+          <p className="mt-6 text-[11px] uppercase tracking-[0.4em] text-sand/80">The Crowne Philosophy</p>
+        </Reveal>
+      </section>
+
+      {/* ============ 02 FEATURED ============ */}
+      <section className="bg-blush/50 py-24 sm:py-28">
         <div className="mx-auto max-w-7xl px-6">
-          <SectionHead eyebrow="Handpicked" title="Featured Pieces" />
+          <EditorialHead
+            index="02"
+            eyebrow="Handpicked for you"
+            title="This week's coveted pieces."
+            action={
+              <Link href="/shop" className="group inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-bronze">
+                Shop all
+                <span className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
+              </Link>
+            }
+          />
           <Stagger className="grid grid-cols-2 gap-5 lg:grid-cols-4" gap={0.1}>
             {featured.map((p) => (
               <StaggerItem key={String(p.id)}>
@@ -265,101 +351,154 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* BESTSELLERS */}
-      <section className="mx-auto max-w-7xl px-6 py-24">
-        <SectionHead eyebrow="Loved by Many" title="Bestsellers" />
-        <Stagger className="grid grid-cols-2 gap-5 lg:grid-cols-4" gap={0.1}>
-          {bestsellers.map((p) => (
-            <StaggerItem key={String(p.id)}>
-              <ProductCard product={p} />
-            </StaggerItem>
-          ))}
-        </Stagger>
-        {bestsellers.length === 0 && (
-          <p className="text-center text-sm text-bronze/60">Loading bestsellers…</p>
-        )}
-        <Reveal className="mt-12 text-center" y={20}>
-          <Magnetic>
-            <Link
-              href="/shop"
-              className="inline-block rounded-full border border-bronze px-10 py-3.5 text-xs font-semibold uppercase tracking-[0.3em] text-bronze transition hover:bg-bronze hover:text-white"
+      {/* ============ 03 BESTSELLERS — dark luxe ============ */}
+      <section className="relative overflow-hidden bg-coco py-24 sm:py-28">
+        <motion.div aria-hidden className="animate-float absolute -right-24 top-16 h-72 w-72 rounded-full bg-bronze/15 blur-3xl" />
+        <motion.div aria-hidden className="animate-float absolute -left-24 bottom-16 h-72 w-72 rounded-full bg-sand/10 blur-3xl [animation-delay:2.5s]" />
+        <div className="relative mx-auto max-w-7xl px-6">
+          <EditorialHead
+            index="03"
+            eyebrow="Loved by thousands"
+            title="The most coveted pairs."
+            dark
+            action={
+              <Link href="/shop?bestseller=1" className="group inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.3em] text-sand">
+                All bestsellers
+                <span className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
+              </Link>
+            }
+          />
+          <Stagger className="grid grid-cols-2 gap-5 lg:grid-cols-4" gap={0.1}>
+            {bestsellers.map((p) => (
+              <StaggerItem key={String(p.id)}>
+                <ProductCard product={p} dark />
+              </StaggerItem>
+            ))}
+          </Stagger>
+          {bestsellers.length === 0 && (
+            <p className="text-center text-sm text-sand/60">Loading bestsellers…</p>
+          )}
+        </div>
+      </section>
+
+      {/* ============ 04 CRAFT — split editorial ============ */}
+      <section className="mx-auto max-w-7xl px-6 py-24 sm:py-28">
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+          <Reveal className="relative">
+            <motion.div
+              className="overflow-hidden rounded-[2rem]"
+              whileHover={{ scale: 0.985 }}
+              transition={{ duration: 0.6, ease: EASE }}
             >
-              View All Footwear
-            </Link>
-          </Magnetic>
-        </Reveal>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={imgSrc('/images/product-3.jpg')} alt="Hand-finished Crowne footwear" loading="lazy" className="aspect-[4/5] w-full object-cover" />
+            </motion.div>
+            <motion.div
+              className="absolute -bottom-6 -right-4 rounded-2xl bg-coco px-7 py-5 shadow-xl sm:-right-8"
+              initial={{ opacity: 0, y: 24, rotate: -2 }}
+              whileInView={{ opacity: 1, y: 0, rotate: -2 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.3, ease: EASE }}
+            >
+              <p className="font-serif text-4xl text-sand">4.9<span className="text-xl text-bronze"> ★</span></p>
+              <p className="mt-1 text-[10px] uppercase tracking-[0.25em] text-blush/70">2,000+ happy customers</p>
+            </motion.div>
+          </Reveal>
+          <div>
+            <Reveal>
+              <p className="flex items-center gap-4 text-xs font-semibold uppercase tracking-[0.35em] text-bronze">
+                <span className="font-serif text-base italic tracking-normal text-bronze/70">04</span>
+                <span className="h-px w-10 bg-bronze/50" />
+                The Craft
+              </p>
+              <h2 className="mt-4 font-serif text-5xl leading-[1.05] text-coco sm:text-6xl">
+                Hand-finished,
+                <br />
+                <span className="italic text-bronze">made for royalty.</span>
+              </h2>
+              <p className="mt-6 max-w-lg leading-relaxed text-bronzedark/90">
+                Every Crowne pair begins as a sketch and ends in the hands of master
+                craftsmen — cushioned insoles, balanced heels, and detailing that
+                catches the light with every step.
+              </p>
+            </Reveal>
+            <Stagger className="mt-8 space-y-4" gap={0.1}>
+              {['Cloud-soft cushioned insoles', 'Balanced, all-evening heels', 'Premium vegan leather finishes'].map((f) => (
+                <StaggerItem key={f} className="flex items-center gap-4">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-blush text-bronze">✓</span>
+                  <span className="text-[15px] text-coco">{f}</span>
+                </StaggerItem>
+              ))}
+            </Stagger>
+            <Reveal delay={0.2} className="mt-9">
+              <Magnetic>
+                <Link
+                  href="/about"
+                  className="group inline-flex items-center gap-3 rounded-full border border-bronze px-9 py-4 text-xs font-semibold uppercase tracking-[0.3em] text-bronze transition hover:bg-bronze hover:text-white"
+                >
+                  Our Story
+                  <span className="transition-transform duration-300 group-hover:translate-x-1.5">→</span>
+                </Link>
+              </Magnetic>
+            </Reveal>
+          </div>
+        </div>
       </section>
 
-      {/* PERKS */}
-      <section className="border-y border-sand bg-white">
-        <Stagger className="mx-auto grid max-w-7xl gap-8 px-6 py-14 sm:grid-cols-3" gap={0.15}>
-          {[
-            { t: 'Free Shipping', d: 'On all orders over PKR 5,000, nationwide.' },
-            { t: 'Easy Exchange', d: '7-day size exchange, no questions asked.' },
-            { t: 'Cash on Delivery', d: 'Pay at your doorstep, anywhere in Pakistan.' },
-          ].map((p) => (
-            <StaggerItem key={p.t} className="text-center">
-              <p className="font-serif text-2xl text-bronze">{p.t}</p>
-              <p className="mt-2 text-sm text-bronzedark/80">{p.d}</p>
-            </StaggerItem>
-          ))}
-        </Stagger>
+      {/* ============ 05 TESTIMONIALS ============ */}
+      <section className="border-y border-sand bg-white py-24 sm:py-28">
+        <div className="mx-auto max-w-7xl px-6">
+          <EditorialHead index="05" eyebrow="Testimonials" title="Worn, adored, reordered." />
+          <Stagger className="grid gap-6 md:grid-cols-3" gap={0.14}>
+            {TESTIMONIALS.map((t, i) => (
+              <StaggerItem key={t.name}>
+                <motion.figure
+                  className="relative h-full overflow-hidden rounded-[1.75rem] bg-blush/50 p-9"
+                  whileHover={{ y: -6 }}
+                  transition={{ duration: 0.4, ease: EASE }}
+                >
+                  <span className="pointer-events-none absolute -top-3 right-5 font-serif text-[7rem] leading-none text-bronze/15">”</span>
+                  <span className="font-serif text-base italic text-bronze/60">0{i + 1}</span>
+                  <Stars value={5} />
+                  <blockquote className="mt-4 font-serif text-xl italic leading-relaxed text-coco">
+                    “{t.quote}”
+                  </blockquote>
+                  <figcaption className="mt-6 text-xs font-semibold uppercase tracking-[0.25em] text-bronze">
+                    {t.name} <span className="text-bronze/50">— {t.city}</span>
+                  </figcaption>
+                </motion.figure>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
       </section>
 
-      {/* TESTIMONIALS */}
-      <section className="mx-auto max-w-7xl px-6 py-24">
-        <SectionHead eyebrow="Testimonials" title="Worn & Adored" />
-        <Stagger className="grid gap-6 md:grid-cols-3" gap={0.14}>
-          {TESTIMONIALS.map((t) => (
-            <StaggerItem key={t.name}>
-              <motion.figure
-                className="h-full rounded-2xl bg-white p-8 shadow-sm"
-                whileHover={{ y: -6, boxShadow: '0 20px 40px -18px rgba(138,109,59,0.35)' }}
-                transition={{ duration: 0.4, ease: EASE }}
-              >
-                <Stars value={5} />
-                <blockquote className="mt-4 font-serif text-lg italic leading-relaxed text-coco">
-                  “{t.quote}”
-                </blockquote>
-                <figcaption className="mt-5 text-xs font-semibold uppercase tracking-[0.25em] text-bronze">
-                  {t.name} — {t.city}
-                </figcaption>
-              </motion.figure>
-            </StaggerItem>
-          ))}
-        </Stagger>
-      </section>
-
-      {/* NEWSLETTER */}
-      <section className="relative overflow-hidden bg-coco py-24">
-        <motion.div
-          aria-hidden
-          className="animate-float absolute -left-16 top-10 h-56 w-56 rounded-full bg-bronze/15 blur-3xl"
-        />
-        <motion.div
-          aria-hidden
-          className="animate-float absolute -right-16 bottom-10 h-56 w-56 rounded-full bg-sand/10 blur-3xl [animation-delay:3s]"
-        />
-        <Reveal className="relative mx-auto max-w-2xl px-6 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-bronze">Newsletter</p>
-          <h2 className="mt-3 font-serif text-4xl text-blush sm:text-5xl">Join the Crowne Circle</h2>
-          <p className="mt-3 text-sm text-blush/70">
-            Be first to know about new arrivals and enjoy 10% off your first order.
+      {/* ============ NEWSLETTER ============ */}
+      <section className="relative overflow-hidden bg-coco py-24 sm:py-28">
+        <motion.div aria-hidden className="animate-float absolute -left-20 top-10 h-64 w-64 rounded-full bg-bronze/15 blur-3xl" />
+        <Reveal className="relative mx-auto max-w-3xl px-6 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.35em] text-bronze">The Inner Circle</p>
+          <h2 className="mt-4 font-serif text-5xl leading-tight text-blush sm:text-6xl">
+            Get <span className="italic text-sand">10% off</span> your first order.
+          </h2>
+          <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-blush/70">
+            Join the Crowne Circle for early access to new drops, private sales
+            and styling notes. No spam — only elegance.
           </p>
-          <form onSubmit={subscribe} className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <form onSubmit={subscribe} className="mx-auto mt-9 flex max-w-xl flex-col gap-3 sm:flex-row">
             <input
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Your email address"
-              className="flex-1 rounded-full border border-bronze/40 bg-transparent px-6 py-3.5 text-sm text-blush placeholder:text-blush/40 focus:border-bronze focus:outline-none"
+              className="flex-1 rounded-full border border-bronze/40 bg-white/5 px-7 py-4 text-sm text-blush placeholder:text-blush/40 focus:border-bronze focus:outline-none"
             />
             <motion.button
               type="submit"
               disabled={submitting}
               whileTap={{ scale: 0.96 }}
-              className="btn-shimmer rounded-full bg-bronze px-10 py-3.5 text-xs font-semibold uppercase tracking-[0.3em] text-white transition-colors hover:bg-bronzedark disabled:opacity-60"
+              className="btn-shimmer rounded-full bg-bronze px-10 py-4 text-xs font-semibold uppercase tracking-[0.3em] text-white transition-colors hover:bg-bronzedark disabled:opacity-60"
             >
               {submitting ? 'Joining…' : 'Subscribe'}
             </motion.button>

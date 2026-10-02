@@ -135,9 +135,20 @@ function ShopInner() {
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
-      <Reveal className="mb-8 text-center" y={20}>
-        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-bronze">The Collection</p>
-        <h1 className="mt-2 font-serif text-5xl text-coco">Shop Crowne</h1>
+      <Reveal className="mb-10" y={20}>
+        <p className="flex items-center gap-4 text-xs font-semibold uppercase tracking-[0.35em] text-bronze">
+          <span className="font-serif text-base italic tracking-normal text-bronze/70">01</span>
+          <span className="h-px w-10 bg-bronze/50" />
+          The Collection
+        </p>
+        <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
+          <h1 className="max-w-xl font-serif text-6xl leading-[1.02] text-coco">
+            The <span className="italic text-bronze">Boutique.</span>
+          </h1>
+          <p className="max-w-xs text-sm leading-relaxed text-bronzedark/70">
+            Every pair, hand-finished and ready to reign — filter by craving.
+          </p>
+        </div>
       </Reveal>
 
       {/* toolbar */}

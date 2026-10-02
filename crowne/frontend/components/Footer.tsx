@@ -1,11 +1,23 @@
 'use client';
 
 import Link from 'next/link';
-import { Reveal, Stagger, StaggerItem } from '@/components/motion';
+import { Reveal, Stagger, StaggerItem, motion } from '@/components/motion';
 
 export default function Footer() {
   return (
-    <footer className="mt-16 bg-coco text-blush">
+    <footer className="relative overflow-hidden bg-coco text-blush">
+      {/* giant wordmark */}
+      <div className="pointer-events-none select-none px-6 pt-10" aria-hidden>
+        <motion.p
+          initial={{ y: 60, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          className="bg-gradient-to-b from-blush/25 to-blush/[0.03] bg-clip-text text-center font-serif text-[19vw] font-semibold leading-[0.85] tracking-[0.08em] text-transparent lg:text-[13rem]"
+        >
+          CROWNE
+        </motion.p>
+      </div>
       <Stagger className="mx-auto grid max-w-7xl gap-10 px-6 py-14 sm:grid-cols-2 lg:grid-cols-4" gap={0.12} amount={0.15}>
         <StaggerItem>
           <p className="font-serif text-2xl font-semibold tracking-[0.3em]">CROWNE</p>
